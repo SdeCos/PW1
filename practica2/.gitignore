@@ -1,0 +1,5 @@
+certificados/*.pem
+certificados/*.key
+certificados/*.srl
+certificados/*.csr
+node_modules/

@@ -1,0 +1,14 @@
+# Extensiones X.509 que la CA añade al firmar el certificado del servidor.
+#
+# subjectAltName es el campo que mira hoy el navegador. El CN del subject ya no
+# lo mira nadie desde Chrome 58 (2017): si no hay SAN, el certificado se rechaza
+# aunque el CN sea correcto. Añade aquí cada nombre por el que se va a llegar
+# al servidor.
+subjectAltName = DNS:localhost, DNS:pw1.local, IP:127.0.0.1
+
+# Este certificado es de un servidor, no de una CA: no puede firmar a nadie más.
+basicConstraints = critical, CA:FALSE
+
+# Para qué se puede usar la clave.
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth

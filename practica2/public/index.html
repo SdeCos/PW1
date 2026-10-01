@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programación Web I — Sesión 6</title>
+  <link rel="stylesheet" href="/estilos.css">
+</head>
+<body>
+  <main>
+    <img src="/logo.svg" alt="Logo de la asignatura" width="72" height="72">
+    <h1>Esta página viaja en claro</h1>
+    <p id="aviso">
+      Ahora mismo estás leyendo esto por HTTP. Cualquiera que comparta red contigo
+      puede leer esta frase entera, y también cambiarla antes de que te llegue.
+    </p>
+    <p class="pie">
+      Cuando el candado aparezca en la barra, vuelve aquí y comprueba que este
+      texto sigue siendo el mismo. Ese es el trabajo de hoy.
+    </p>
+  </main>
+  <script>
+    // Pequeña señal visual: pinta el esquema real de la conexión.
+    document.addEventListener('DOMContentLoaded', () => {
+      const esSeguro = location.protocol === 'https:';
+      const aviso = document.getElementById('aviso');
+      aviso.textContent = esSeguro
+        ? 'Conexión cifrada. Nadie por el camino puede leer ni modificar esto.'
+        : 'Ahora mismo estás leyendo esto por HTTP. Cualquiera que comparta red contigo puede leer esta frase entera, y también cambiarla antes de que te llegue.';
+      aviso.className = esSeguro ? 'ok' : 'mal';
+    });
+  </script>
+</body>
+</html>

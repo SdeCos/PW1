@@ -1,0 +1,197 @@
+diff --git a/inventario.js.bak b/inventario.js
+index ddb7911..56b6969 100644
+--- a/inventario.js.bak
++++ b/inventario.js
+@@ -6,131 +6,105 @@
+  * Hoy le toca a usted.
+  */
+ 
+-var IVA = 0.21;
+-
+-// La tienda por defecto se crea al cargar el módulo.
+-var TIENDA_POR_DEFECTO = crearTienda('Sin nombre');
++const IVA = 0.21;
+ 
+ 
+ /* ---------- Productos ---------- */
+ 
+-function Producto(nombre, precio, stock) {
+-  this.nombre = nombre;
+-  this.precio = precio;
+-  this.stock = stock;
+-}
++class Producto {
++  constructor(nombre, precio, stock) {
++    this.nombre = nombre;
++    this.precio = precio;
++    this.stock = stock;
++  }
+ 
+-Producto.prototype.precioConIva = function () {
+-  return Math.round(this.precio * (1 + IVA) * 100) / 100;
+-};
++  precioConIva() {
++    return Math.round(this.precio * (1 + IVA) * 100) / 100;
++  }
+ 
+-Producto.prototype.descripcion = function () {
+-  return this.nombre + ' (' + this.precioConIva() + ' €)';
+-};
++  descripcion() {
++    return `${this.nombre} (${this.precioConIva()} €)`;
++  }
++}
+ 
+ 
+ /* ---------- Utilidades ---------- */
+ 
+ // Devuelve el valor, o el valor por defecto si no hay valor.
+-function valorPorDefecto(valor, porDefecto) {
+-  if (valor == null) {
+-    return porDefecto;
+-  }
+-  return valor;
+-}
++const valorPorDefecto = (valor, porDefecto) => valor ?? porDefecto;
+ 
+ // Suma todos los números que se le pasen.
+-function sumar() {
+-  var total = 0;
+-  for (var i = 0; i < arguments.length; i++) {
+-    total += arguments[i];
+-  }
+-  return total;
+-}
++const sumar = (...numeros) => numeros.reduce((total, numero) => total + numero, 0);
+ 
+ // Etiqueta de disponibilidad según el stock.
+-function clasificar(stock) {
+-  if (stock === 0) {
+-    var estado = 'agotado';
+-  } else if (stock < 5) {
+-    var estado = 'pocas unidades';
+-  }
+-  return estado || 'disponible';
+-}
++const clasificar = (stock) => {
++  if (stock === 0) return 'agotado';
++  if (stock < 5) return 'pocas unidades';
++  return 'disponible';
++};
+ 
+ // Crea una función de aviso por cada producto.
+-function crearAvisos(nombres) {
+-  var avisos = [];
+-  for (var i = 0; i < nombres.length; i++) {
+-    (function (n) {
+-      avisos.push(function () {
+-        return 'Revisa el stock de ' + nombres[n];
+-      });
+-    })(i);
+-  }
+-  return avisos;
+-}
++const crearAvisos = (nombres) => Array.from(
++  nombres,
++  (nombre) => () => `Revisa el stock de ${nombre}`
++);
+ 
+ 
+ /* ---------- Listados ---------- */
+ 
+-function ordenarPorPrecio(lista) {
+-  return lista.sort(function (a, b) {
+-    return a.precio - b.precio;
+-  });
+-}
++const ordenarPorPrecio = (lista) => lista.sort((a, b) => a.precio - b.precio);
+ 
+-function masBarato(lista) {
++const masBarato = (lista) => {
+   ordenarPorPrecio(lista);
+   return lista[0];
+-}
++};
++
++const exportarCSV = (lista) => {
++  const filas = ['nombre;precio;stock'];
+ 
+-function exportarCSV(lista) {
+-  var salida = 'nombre;precio;stock\n';
+-  for (var i = 0; i < lista.length; i++) {
+-    salida += lista[i].nombre + ';' + lista[i].precio + ';' + lista[i].stock + '\n';
++  for (const { nombre, precio, stock } of lista) {
++    filas.push(`${nombre};${precio};${stock}`);
+   }
+-  return salida;
+-}
++
++  return `${filas.join('\n')}\n`;
++};
+ 
+ 
+ /* ---------- La tienda ---------- */
+ 
+-function crearTienda(nombre) {
+-  return {
+-    nombre: nombre,
++const crearTienda = (nombre) => ({
++    nombre,
+     productos: [],
+-    anadir: function (producto) {
++    anadir(producto) {
+       this.productos.push(producto);
+       return this;
+     },
+-    resumen: function () {
+-      var self = this;
+-      return this.productos.map(function (p) {
+-        return self.nombre + ': ' + p.descripcion();
+-      });
++    resumen() {
++      return this.productos.map((producto) => `${this.nombre}: ${producto.descripcion()}`);
+     },
+-    valorTotal: function () {
+-      var total = 0;
+-      this.productos.forEach(function (p) {
+-        total += p.precioConIva() * p.stock;
+-      });
++    valorTotal() {
++      const total = this.productos.reduce(
++        (acumulado, producto) => acumulado + producto.precioConIva() * producto.stock,
++        0
++      );
+       return Math.round(total * 100) / 100;
+     }
+-  };
+-}
++  });
++
++// La tienda por defecto se crea al cargar el módulo.
++const TIENDA_POR_DEFECTO = crearTienda('Sin nombre');
+ 
+ 
+ module.exports = {
+-  IVA: IVA,
+-  TIENDA_POR_DEFECTO: TIENDA_POR_DEFECTO,
+-  Producto: Producto,
+-  valorPorDefecto: valorPorDefecto,
+-  sumar: sumar,
+-  clasificar: clasificar,
+-  crearAvisos: crearAvisos,
+-  ordenarPorPrecio: ordenarPorPrecio,
+-  masBarato: masBarato,
+-  exportarCSV: exportarCSV,
+-  crearTienda: crearTienda
++  IVA,
++  TIENDA_POR_DEFECTO,
++  Producto,
++  valorPorDefecto,
++  sumar,
++  clasificar,
++  crearAvisos,
++  ordenarPorPrecio,
++  masBarato,
++  exportarCSV,
++  crearTienda
+ };

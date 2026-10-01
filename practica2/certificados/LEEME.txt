@@ -1,0 +1,3 @@
+Esta carpeta está vacía a propósito: los certificados los generas tú.
+Los comandos están en el LEEME.md de la carpeta de arriba, paso 1.
+Lo que sí encontrarás aquí es extensiones.cnf, que necesitarás en el paso 5.
