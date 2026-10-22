@@ -9,7 +9,7 @@
 ## 1 · Ronda 1: el prompt escueto
 
 Enlace a la conversación, o la conversación exportada entera.
-**[Conversacion]()**
+**[Conversacion](https://chatgpt.com/s/cx_6ada301e5db48191b52a82246176f8b7)**
 
 > Salida de `node --test`:
 
