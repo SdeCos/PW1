@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Usuarios</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    form { display: flex; gap: 8px; margin-bottom: 24px; }
+    input { flex: 1; padding: 6px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+    td button { margin-right: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Usuarios</h1>
+
+  <form id="formulario">
+    <input id="nombre" placeholder="Nombre" required>
+    <input id="email" type="email" placeholder="Email" required>
+    <button id="boton">Crear</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>Nombre</th><th>Email</th><th></th></tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+
+  <script>
+    const API = '/api/usuarios';
+    const formulario = document.querySelector('#formulario');
+    const nombre = document.querySelector('#nombre');
+    const email = document.querySelector('#email');
+    const boton = document.querySelector('#boton');
+    const tabla = document.querySelector('#tabla');
+    let editando = null;   // el _id del usuario que estamos editando (null: ninguno)
+
+    // LEER: pide la lista al servidor y la pinta en la tabla
+    async function cargar() {
+      const respuesta = await fetch(API);
+      const usuarios = await respuesta.json();
+      tabla.innerHTML = '';
+      for (const usuario of usuarios) {
+        const fila = tabla.insertRow();
+        fila.insertCell().textContent = usuario.nombre;
+        fila.insertCell().textContent = usuario.email;
+        const acciones = fila.insertCell();
+
+        const editar = document.createElement('button');
+        editar.textContent = 'Editar';
+        editar.addEventListener('click', () => empezarAEditar(usuario));
+        acciones.append(editar);
+
+        const borrar = document.createElement('button');
+        borrar.textContent = 'Borrar';
+        borrar.addEventListener('click', () => borrarUsuario(usuario._id));
+        acciones.append(borrar);
+      }
+    }
+
+    // CREAR o ACTUALIZAR: al enviar el formulario
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();   // que el navegador no recargue la página
+      const datos = { nombre: nombre.value, email: email.value };
+      const url = editando ? `${API}/${editando}` : API;
+      await fetch(url, {
+        method: editando ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+      editando = null;
+      boton.textContent = 'Crear';
+      formulario.reset();
+      cargar();
+    });
+
+    // Rellena el formulario con los datos del usuario que vamos a editar
+    function empezarAEditar(usuario) {
+      editando = usuario._id;
+      nombre.value = usuario.nombre;
+      email.value = usuario.email;
+      boton.textContent = 'Guardar cambios';
+    }
+
+    // BORRAR
+    async function borrarUsuario(id) {
+      if (!confirm('¿Seguro que quieres borrar este usuario?')) return;
+      await fetch(`${API}/${id}`, { method: 'DELETE' });
+      cargar();
+    }
+
+    cargar();   // al abrir la página
+  </script>
+</body>
+</html>

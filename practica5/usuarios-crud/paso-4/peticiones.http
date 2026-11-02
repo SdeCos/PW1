@@ -1,0 +1,40 @@
+# Peticiones para probar la API.
+# Con la extensión REST Client de VS Code: pulsa «Send Request» encima de cada una.
+
+@api = http://localhost:3000/api/usuarios
+
+# Para LEER uno, ACTUALIZAR y BORRAR: copia aquí un _id de los que devuelve el servidor
+@id = PEGA_AQUI_UN_ID
+
+### CREAR un usuario (paso 2)
+POST {{api}}
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ejemplo.com" }
+
+### CREAR otro
+POST {{api}}
+Content-Type: application/json
+
+{ "nombre": "Luis", "email": "luis@ejemplo.com" }
+
+### CREAR sin email: tiene que dar 400 (paso 2)
+POST {{api}}
+Content-Type: application/json
+
+{ "nombre": "Eva" }
+
+### LEER todos (paso 3)
+GET {{api}}
+
+### LEER uno (paso 3)
+GET {{api}}/{{id}}
+
+### ACTUALIZAR (paso 4)
+PUT {{api}}/{{id}}
+Content-Type: application/json
+
+{ "nombre": "Ana María", "email": "ana@ejemplo.com" }
+
+### BORRAR (paso 4)
+DELETE {{api}}/{{id}}
