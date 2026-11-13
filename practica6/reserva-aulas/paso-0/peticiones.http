@@ -1,0 +1,13 @@
+# Peticiones para probar la API.
+# Con la extensión REST Client de VS Code: pulsa «Send Request» encima de cada una.
+
+@usuarios = http://localhost:3000/api/usuarios
+
+### CREAR un usuario
+POST {{usuarios}}
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ejemplo.com" }
+
+### LEER todos los usuarios
+GET {{usuarios}}

@@ -1,0 +1,53 @@
+# Peticiones para probar la API.
+# Con la extensión REST Client de VS Code: pulsa «Send Request» encima de cada una.
+
+@usuarios = http://localhost:3000/api/usuarios
+
+### CREAR un usuario
+POST {{usuarios}}
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ejemplo.com" }
+
+### LEER todos los usuarios
+GET {{usuarios}}
+
+# ===== Paso 1 · Aulas =====
+
+@aulas = http://localhost:3000/api/aulas
+
+# Para LEER una, ACTUALIZAR y BORRAR: copia aquí un _id de los que devuelve el servidor
+@id = PEGA_AQUI_UN_ID
+
+### CREAR un aula
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Aula 1.01", "capacidad": 30, "edificio": "Politécnica" }
+
+### CREAR otra
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Laboratorio 2", "capacidad": 20, "edificio": "Politécnica" }
+
+### CREAR con capacidad 0: tiene que dar 400
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Armario", "capacidad": 0, "edificio": "Politécnica" }
+
+### LEER todas
+GET {{aulas}}
+
+### LEER una
+GET {{aulas}}/{{id}}
+
+### ACTUALIZAR
+PUT {{aulas}}/{{id}}
+Content-Type: application/json
+
+{ "nombre": "Aula 1.01", "capacidad": 35, "edificio": "Politécnica" }
+
+### BORRAR
+DELETE {{aulas}}/{{id}}

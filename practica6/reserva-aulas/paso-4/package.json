@@ -1,0 +1,14 @@
+{
+  "name": "reserva-aulas",
+  "version": "1.0.0",
+  "description": "Reserva de aulas · Programación Web I",
+  "main": "servidor.js",
+  "scripts": {
+    "start": "node --watch servidor.js",
+    "sembrar": "node sembrar.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "mongoose": "^9.11.4"
+  }
+}

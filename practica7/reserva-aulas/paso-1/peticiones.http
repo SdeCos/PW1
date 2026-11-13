@@ -1,0 +1,91 @@
+# Peticiones para probar la API.
+# Con la extensión REST Client de VS Code: pulsa «Send Request» encima de cada una.
+
+@usuarios = http://localhost:3000/api/usuarios
+
+### CREAR un usuario
+POST {{usuarios}}
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ejemplo.com" }
+
+### LEER todos los usuarios
+GET {{usuarios}}
+
+# ===== Aulas (sesión 17) =====
+
+@aulas = http://localhost:3000/api/aulas
+
+# Para LEER una, ACTUALIZAR y BORRAR: copia aquí un _id de los que devuelve el servidor
+@id = PEGA_AQUI_UN_ID
+
+### CREAR un aula
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Aula 1.01", "capacidad": 30, "edificio": "Politécnica" }
+
+### CREAR otra
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Laboratorio 2", "capacidad": 20, "edificio": "Politécnica" }
+
+### CREAR con capacidad 0: tiene que dar 400
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Armario", "capacidad": 0, "edificio": "Politécnica" }
+
+### LEER todas
+GET {{aulas}}
+
+### LEER una
+GET {{aulas}}/{{id}}
+
+### ACTUALIZAR
+PUT {{aulas}}/{{id}}
+Content-Type: application/json
+
+{ "nombre": "Aula 1.01", "capacidad": 35, "edificio": "Politécnica" }
+
+### BORRAR
+DELETE {{aulas}}/{{id}}
+
+# ===== Un aula con un nombre peligroso (sesión 17) =====
+# Créala y recarga http://localhost:3000/aulas. ¿Qué pasa con el fondo?
+
+### CREAR un aula con HTML en el nombre
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "<img src=x onerror=\"document.body.style.background='red'\">", "capacidad": 1, "edificio": "?" }
+
+# ===== Paso 1 · Darse de alta =====
+
+### REGISTRO de Ana
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ua.es", "clave": "ana-pw1" }
+
+### REGISTRO de Luis
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{ "nombre": "Luis", "email": "luis@ua.es", "clave": "luis-pw1" }
+
+### Ana otra vez: tiene que dar 409
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ua.es", "clave": "otra" }
+
+### Sin clave: tiene que dar 400
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{ "nombre": "Eva", "email": "eva@ua.es" }
+
+### ¿Sale la clave en la lista de usuarios? (no tiene que salir)
+GET {{usuarios}}
