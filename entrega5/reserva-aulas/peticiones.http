@@ -1,0 +1,189 @@
+# Peticiones para probar la API.
+# Con la extensión REST Client de VS Code: pulsa «Send Request» encima de cada una.
+
+@usuarios = http://localhost:3000/api/usuarios
+@aulas = http://localhost:3000/api/aulas
+@reservas = http://localhost:3000/api/reservas
+
+# Para LEER una, ACTUALIZAR y BORRAR un aula: copia aquí un _id de los que devuelve el servidor
+@id = PEGA_AQUI_UN_ID
+
+# ===== Usuarios: darse de alta y entrar =====
+
+### REGISTRO de Ana
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{ "nombre": "Ana", "email": "ana@ua.es", "clave": "ana-pw1" }
+
+### REGISTRO de Luis
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{ "nombre": "Luis", "email": "luis@ua.es", "clave": "luis-pw1" }
+
+### LEER todos los usuarios (la clave no tiene que salir)
+GET {{usuarios}}
+
+### LOGIN de Ana (el token de la respuesta queda guardado en {{token}})
+# @name login
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{ "email": "ana@ua.es", "clave": "ana-pw1" }
+
+@token = {{login.response.body.token}}
+
+### LOGIN de Luis
+# @name loginLuis
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{ "email": "luis@ua.es", "clave": "luis-pw1" }
+
+@tokenLuis = {{loginLuis.response.body.token}}
+
+### LOGIN con la clave mal: tiene que dar 401
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{ "email": "ana@ua.es", "clave": "no-me-acuerdo" }
+
+# ===== Aulas =====
+
+### LEER todas
+GET {{aulas}}
+
+### CREAR un aula SIN token: tiene que dar 401
+POST {{aulas}}
+Content-Type: application/json
+
+{ "nombre": "Aula pirata", "capacidad": 5, "edificio": "?" }
+
+### CREAR un aula CON el token de Ana: 201
+POST {{aulas}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "nombre": "Seminario Ana", "capacidad": 12, "edificio": "Politécnica" }
+
+### CREAR con capacidad 0: tiene que dar 400
+POST {{aulas}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "nombre": "Armario", "capacidad": 0, "edificio": "Politécnica" }
+
+### LEER una
+GET {{aulas}}/{{id}}
+
+### ACTUALIZAR
+PUT {{aulas}}/{{id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "nombre": "Seminario Ana", "capacidad": 14, "edificio": "Politécnica" }
+
+### Luis intenta borrar el aula de Ana: tiene que dar 403
+DELETE {{aulas}}/{{id}}
+Authorization: Bearer {{tokenLuis}}
+
+### Ana la borra: 204
+DELETE {{aulas}}/{{id}}
+Authorization: Bearer {{token}}
+
+# ===== Reservas =====
+
+### LEER las reservas existentes
+GET {{reservas}}
+
+### RESERVAR un aula (usa un _id de aula existente)
+POST {{reservas}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "aula": "PEGA_AQUI_UN_ID_DE_AULA", "fecha": "2026-12-01", "hora": "10:00" }
+
+### Otra reserva para la misma aula, día y hora: tiene que dar 409
+POST {{reservas}}
+Authorization: Bearer {{tokenLuis}}
+Content-Type: application/json
+
+{ "aula": "PEGA_AQUI_UN_ID_DE_AULA", "fecha": "2026-12-01", "hora": "10:00" }
+
+### ANULAR una reserva propia (copia su _id de LEER reservas)
+DELETE {{reservas}}/PEGA_AQUI_UN_ID_DE_RESERVA
+Authorization: Bearer {{token}}
+
+# =====================================================================
+# Paso 5 · Tres ataques a nuestra propia aplicación
+# Antes: lanza REGISTRO de Ana, REGISTRO de Luis y los dos LOGIN de arriba.
+# =====================================================================
+
+# ----- Ataque 1 · Entrar sin escribir el email (CWE-943) -----
+# El servidor espera un texto en "email". ¿Y si le llega un objeto con un operador de MongoDB?
+
+### LOGIN: en vez del email de Ana, «cualquier email que empiece por a»
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{ "email": { "$regex": "^a" }, "clave": "ana-pw1" }
+
+# ----- Ataque 2 · Cambiar la clave de otro (CWE-862 y CWE-915) -----
+# Pon aquí el _id de Ana (sale en LEER todos los usuarios; no hace falta haber entrado)
+@idAna = PEGA_AQUI_EL_ID_DE_ANA
+
+### Sin token: le ponemos a Ana una clave que sabemos nosotros («hackeada»)
+PUT {{usuarios}}/{{idAna}}
+Content-Type: application/json
+
+{ "clave": "12cb50435ed4020a8835f7b6a6689071:854caf15edc9c3cfcdb4b540a5173d36c66826c637c2458adbb95dcca385dc9e2ac9317a0cdfb09ffa51884a3b417ba4e4855b0dd3313bf80678fde5e7343786" }
+
+### …y entramos como Ana con NUESTRA clave
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{ "email": "ana@ua.es", "clave": "hackeada" }
+
+### La clave de verdad de Ana ya no vale: 401
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{ "email": "ana@ua.es", "clave": "ana-pw1" }
+
+### Para dejarlo como estaba: borrar a Ana (¡tampoco pide token!) y lanzar otra vez REGISTRO de Ana
+DELETE {{usuarios}}/{{idAna}}
+
+# ----- Ataque 3 · Fabricar un token sin saber ninguna clave (CWE-798) -----
+# En la terminal:   node ataques/fabricar-token.js luis@ua.es
+# Pega aquí el token que escribe:
+@tokenFalso = PEGA_AQUI_EL_TOKEN_FABRICADO
+
+### Crear un aula «como Luis», sin su clave
+POST {{aulas}}
+Authorization: Bearer {{tokenFalso}}
+Content-Type: application/json
+
+{ "nombre": "Aula que Luis no creó", "capacidad": 1, "edificio": "?" }
+
+# =====================================================================
+# Paso 6 · Después de los arreglos, repite los tres ataques de arriba:
+#   Ataque 1 → 401          (entrar solo acepta textos)
+#   Ataque 2 → 401 sin token; 403 con el token de Luis
+#   Ataque 3 → 401          (el secreto ya no es el del código: está en .env)
+# =====================================================================
+
+### Ataque 2 con el token de Luis: sé quién eres, pero ese usuario no es el tuyo → 403
+PUT {{usuarios}}/{{idAna}}
+Authorization: Bearer {{tokenLuis}}
+Content-Type: application/json
+
+{ "nombre": "Ana (cambiada por Luis)" }
+
+### Ana sí puede cambiar su nombre… pero su clave no se cambia por aquí
+# (Antes lanza otra vez REGISTRO de Ana si el ataque 2 le cambió la clave, y LOGIN de Ana)
+PUT {{usuarios}}/{{idAna}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "nombre": "Ana María", "clave": "esto-no-se-guarda" }

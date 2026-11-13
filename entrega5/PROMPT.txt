@@ -1,0 +1,1 @@
+Esta es una aplicación de reserva de aulas hecha con Express y Mongoose. Ya tiene usuarios y aulas. Añade las reservas: un usuario que ha entrado puede reservar un aula para un día y una hora, ver las reservas que hay y anular las suyas. Sigue la estructura del proyecto.

@@ -1,0 +1,10 @@
+body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+nav { margin-bottom: 16px; }
+form { display: flex; gap: 8px; margin-bottom: 24px; }
+input { flex: 1; min-width: 0; padding: 6px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+td button { margin-right: 4px; }
+.nota { color: #777; font-size: 0.9em; margin-top: 16px; }
+nav form { display: inline; margin: 0; }   /* el botón de salir, en la barra (sesión 18) */
+.error { color: #b3261e; }

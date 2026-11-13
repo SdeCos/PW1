@@ -1,0 +1,107 @@
+[32m✔ R2 · sin token, o con un token malo: 401 y no se crea nada [90m(296.7805ms)[39m[39m
+[31m✖ R3 · 201, y la reserva es de quien dice el token (el usuario del cuerpo no cuenta) [90m(1.457791ms)[39m[39m
+[32m✔ R4 · datos malos: 400 y no se crea nada [90m(7.873708ms)[39m[39m
+[31m✖ R5 · un aula que no existe: 404 [90m(0.692625ms)[39m[39m
+[31m✖ R6 · la misma aula, el mismo día a la misma hora: 409, sea de quien sea [90m(0.707708ms)[39m[39m
+[31m✖ R7 · GET /api/reservas: 200, una lista, sin emails ni claves [90m(0.623667ms)[39m[39m
+[31m✖ R8 · anular: 401 sin token, 403 la de otro, 404 si no existe, 204 la tuya [90m(0.690167ms)[39m[39m
+[34mℹ tests 7[39m
+[34mℹ suites 0[39m
+[34mℹ pass 2[39m
+[34mℹ fail 5[39m
+[34mℹ cancelled 0[39m
+[34mℹ skipped 0[39m
+[34mℹ todo 0[39m
+[34mℹ duration_ms 444.343666[39m
+
+[31m✖ failing tests:[39m
+
+test at practica5.test.cjs:76:1
+[31m✖ R3 · 201, y la reserva es de quien dice el token (el usuario del cuerpo no cuenta) [90m(1.457791ms)[39m[39m
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 201
+  
+      at TestContext.<anonymous> (/Users/sauldecos/git/PW1/entrega5/reserva-aulas/practica5.test.cjs:78:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 201,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at practica5.test.cjs:106:1
+[31m✖ R5 · un aula que no existe: 404 [90m(0.692625ms)[39m[39m
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 404
+  
+      at TestContext.<anonymous> (/Users/sauldecos/git/PW1/entrega5/reserva-aulas/practica5.test.cjs:108:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 404,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at practica5.test.cjs:111:1
+[31m✖ R6 · la misma aula, el mismo día a la misma hora: 409, sea de quien sea [90m(0.707708ms)[39m[39m
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 201
+  
+      at TestContext.<anonymous> (/Users/sauldecos/git/PW1/entrega5/reserva-aulas/practica5.test.cjs:113:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 201,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at practica5.test.cjs:119:1
+[31m✖ R7 · GET /api/reservas: 200, una lista, sin emails ni claves [90m(0.623667ms)[39m[39m
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 201
+  
+      at TestContext.<anonymous> (/Users/sauldecos/git/PW1/entrega5/reserva-aulas/practica5.test.cjs:120:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 201,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at practica5.test.cjs:130:1
+[31m✖ R8 · anular: 401 sin token, 403 la de otro, 404 si no existe, 204 la tuya [90m(0.690167ms)[39m[39m
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 201
+  
+      at TestContext.<anonymous> (/Users/sauldecos/git/PW1/entrega5/reserva-aulas/practica5.test.cjs:132:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 201,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
